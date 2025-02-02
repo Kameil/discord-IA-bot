@@ -19,13 +19,22 @@ rogerioicon = 'https://media.discordapp.net/attachments/1043205236501786654/1225
 @bot.event
 async def on_ready():
     print(f'Online {bot.user}')
+
+
+chats = {}
+
 @bot.event
 async def on_message(message: discord.Message):
+    global chats
     if not message.author.bot:
         if f"<@{bot.user.id}>" in message.content:
+            if not chats.get(str(message.channel.id)):
+                chats[str(message.channel.id)] = model.start_chat()
+            chat = chats[str(message.channel.id)]
+            messagem = "mensagem de " + message.author.name + ": " + message.content.replace("<@1041361324506087555>", "Rogerio Tech")
             async with message.channel.typing():
-                response = model.generate_content(
-                    message.content.replace("<@1041361324506087555>", "Rogerio Tech"),
+                response = chat.send_message(
+                    messagem,
                     generation_config = genai.GenerationConfig(
                         max_output_tokens=1000,
                         temperature=0.1
