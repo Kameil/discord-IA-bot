@@ -35,15 +35,21 @@ async def on_message(message: discord.Message):
             async with message.channel.typing():
                 response = chat.send_message(
                     messagem,
+                    stream = True,
                     generation_config = genai.GenerationConfig(
                         max_output_tokens=1000,
                         temperature=0.1
                         )
                         )
 
-                textos = textwrap.wrap(response.text, 2000)
-                for texto in textos:
-                    await message.channel.send(texto)
+                # textos = textwrap.wrap(response.text, 2000)
+                message_enviada = await message.reply("z", mention_author=True)
+                conteudo = ""  
+
+                for chunk in response:
+                    conteudo += chunk.text  
+                    await message_enviada.edit(content=conteudo) 
+
 
     await bot.process_commands(message)
 
