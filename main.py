@@ -23,7 +23,7 @@ async def on_ready():
 async def on_message(message: discord.Message):
     if not message.author.bot:
         if f"<@{bot.user.id}>" in message.content or bot.user:
-            with message.channel.typing():
+            async with message.channel.typing():
                 response = model.generate_content(
                     message.content.replace("<@1041361324506087555>", "Rogerio Tech"),
                     generation_config = genai.GenerationConfig(
