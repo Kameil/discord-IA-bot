@@ -23,7 +23,7 @@ async def on_ready():
     sync = await bot.tree.sync()
     print(f'{len(sync)} Comandos Foram sincronizados.')
 
-from io import BytesIO
+
 import httpx
 import base64
 
