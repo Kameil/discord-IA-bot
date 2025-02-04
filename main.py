@@ -76,13 +76,14 @@ async def on_message(message: discord.Message):
     await bot.process_commands(message)
 
 
-@bot.tree.command(name='img', description='analisar imagem.')
-async def Jokenpo(inter: discord.Interaction, imagem: discord.Attachment):
-    if not imagem.content_type.startswith("image/"):
-        await inter.response.send_message("Por favor, envie uma imagem válida!", ephemeral=True)
-        return
-    await inter.response.defer()
+@bot.tree.command(name='user', description='analisar usuario?')
+async def Jokenpo(inter: discord.Interaction, imagem: discord.Member):
+    # if not imagem.content_type.startswith("image/"):
+    #     await inter.response.send_message("Por favor, envie uma imagem válida!", ephemeral=True)
+    #     return
+    # await inter.response.defer()
     image_data = await imagem.read()
+    await inter.followup.send("comando em desenvolvimento")
 
 
 bot.run(token)
