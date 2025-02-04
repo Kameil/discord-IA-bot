@@ -6,9 +6,15 @@ genai.configure(api_key=api_key)
 
 model = genai.GenerativeModel("gemini-1.5-flash", system_instruction="Seu Nome È Rogerio Tech e vocè e um bot do discord engracado que responde com respostas engracadas e ironicasm, voce nao fala de modo muito formal, voce deve falar como a maioria dos usuarios do discord, voce quase nao escreve utilizando as regras do portugues.")
 
+generation_config = genai.GenerationConfig(
+                        max_output_tokens=1000,
+                        temperature=0.5
+                        )
+
 import discord
 
 from discord.ext import commands
+from discord import app_commands
 
 import os
 import random
@@ -55,10 +61,7 @@ async def on_message(message: discord.Message):
                 response = chat.send_message(
                     prompt,
                     stream = True,
-                    generation_config = genai.GenerationConfig(
-                        max_output_tokens=1000,
-                        temperature=0.5
-                        )
+                    generation_config = generation_config
                         )
 
                 # textos = textwrap.wrap(response.text, 2000)
@@ -76,14 +79,24 @@ async def on_message(message: discord.Message):
     await bot.process_commands(message)
 
 
-@bot.tree.command(name='user', description='analisar usuario?')
-async def Jokenpo(inter: discord.Interaction, imagem: discord.Member):
-    # if not imagem.content_type.startswith("image/"):
-    #     await inter.response.send_message("Por favor, envie uma imagem válida!", ephemeral=True)
-    #     return
-    # await inter.response.defer()
-    image_data = await imagem.read()
-    await inter.followup.send("comando em desenvolvimento")
+@bot.tree.command(name='analizar', description='descobrir se e desenrolado.')
+@app_commands.describe(user="Usuario a ser analisado")
+async def Jokenpo(inter: discord.Interaction, user: discord.User):
+    await inter.response.defer()
+    prompt = "analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:" + user.name
+    async with httpx.AsyncClient() as client:
+        response = await client.get(user.avatar.url)
+        if response.status_code == 200:
+            print(user.avatar.url)
+        
+            print(response.status_code)
+        avatar = response.content
+    response = model.generate_content(
+    [{'mime_type': 'image/png', 'data': base64.b64encode(avatar).decode("utf-8")}, prompt],
+    generation_config=generation_config
+)
+
+    await inter.followup.send(response.text)
 
 
 bot.run(token)
