@@ -89,7 +89,7 @@ async def on_message(message: discord.Message):
     await bot.process_commands(message)
 
 
-@bot.tree.command(name='analizar', description='descobrir se e desenrolado.')
+@bot.tree.command(name='analisar', description='descobrir se e desenrolado.')
 @app_commands.describe(user="Usuario a ser analisado", mpc="Mensagens por canal. Padrao:100")	
 async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
     await inter.response.defer()
