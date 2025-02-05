@@ -43,7 +43,16 @@ async def on_message(message: discord.Message):
             if not chats.get(str(message.channel.id)):
                 chats[str(message.channel.id)] = model.start_chat()
             chat = chats[str(message.channel.id)]
-            prompt = "mensagem de " + message.author.name + ": " + message.content.replace("<@1041361324506087555>", "Rogerio Tech")
+            if message.author.activities:
+                print(message.author.activities)
+                atividades = []
+                for atividade in message.author.activities:
+                    atividades.append(f"{message.author.name} esta jogando " + atividade.name)
+            prompt = "mensagem de " + message.author.name 
+            if atividades:
+                prompt += "\n" + "\n".join(atividades)
+                print(prompt)
+            prompt +=  ": " + message.content.replace("<@1041361324506087555>", "Rogerio Tech")
             async with message.channel.typing():
                 images = []
                 count = 1
