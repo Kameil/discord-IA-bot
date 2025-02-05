@@ -80,16 +80,16 @@ async def on_message(message: discord.Message):
 
 
 @bot.tree.command(name='analizar', description='descobrir se e desenrolado.')
-@app_commands.describe(user="Usuario a ser analisado", mpc="Mensagens por canal. Padrao:100")	
-async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
+@app_commands.describe(user="Usuario a ser analisado", mpu="Limites de mensagens a ser capturada. Padrao:1000")	
+async def Jokenpo(inter: discord.Interaction, user: discord.User, mpu: int=1000):
     await inter.response.defer()
     try:
 
         messages = []
-        for channel in inter.guild.text_channels:
-            async for message in channel.history(limit=mpc):
-                if message.author == user:
-                    messages.append("Mensagem de " + user.name + f" em #{message.channel.name}: " + message.content)
+        async for message in user.history(limit=mpu):
+            if message.author == user:
+                messages.append("Mensagem de " + user.name + f" em #{message.channel.name}: " + message.content)
+                print(message.content)
 
         prompt = "analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:" + user.name
         prompt += "/n".join(messages)
