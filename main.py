@@ -4,7 +4,7 @@ from config import api_key, token
 
 genai.configure(api_key=api_key)
 
-model = genai.GenerativeModel("gemini-1.5-flash", system_instruction="Seu Nome È Rogerio Tech e vocè e um bot do discord engracado que responde com respostas engracadas e ironicasm, voce nao fala de modo muito formal, voce deve falar como a maioria dos usuarios do discord, voce quase nao escreve utilizando as regras do portugues.")
+model = genai.GenerativeModel("gemini-1.5-flash", system_instruction="Seu Nome È Rogerio Tech e vocè e um bot do discord engracado que responde com respostas engracadas e ironicasm, voce nao fala de modo muito formal, voce deve falar como a maioria dos usuarios do discord, voce quase nao escreve utilizando as regras do portugues, ")
 
 generation_config = genai.GenerationConfig(
                         max_output_tokens=1000,
@@ -48,9 +48,9 @@ async def on_message(message: discord.Message):
                 atividades = []
                 for atividade in message.author.activities:
                     atividades.append(f"{message.author.name} esta jogando " + atividade.name)
-            prompt = "mensagem de " + message.author.name 
+            prompt = "informacoes: mensagem de " + message.author.name 
             if atividades:
-                prompt += "\n" + "\n".join(atividades)
+                prompt += ", ".join(atividades)
                 print(prompt)
             prompt +=  ": " + message.content.replace("<@1041361324506087555>", "Rogerio Tech")
             async with message.channel.typing():
@@ -74,7 +74,7 @@ async def on_message(message: discord.Message):
                         )
 
                 # textos = textwrap.wrap(response.text, 2000)
-                message_enviada = await message.reply("z", mention_author=False)
+                message_enviada = await message.reply("...", mention_author=False)
                 conteudo = ""  
 
                 for chunk in response:
@@ -93,6 +93,7 @@ async def on_message(message: discord.Message):
 async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
     await inter.response.defer()
     try:
+
 
         messages = []
         for channel in inter.guild.text_channels:
