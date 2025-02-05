@@ -83,27 +83,31 @@ async def on_message(message: discord.Message):
 @app_commands.describe(user="Usuario a ser analisado", mpc="Mensagens por canal. Padrao:100")	
 async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
     await inter.response.defer()
-    messages = []
-    for channel in inter.guild.text_channels:
-        async for message in channel.history(limit=mpc):
-            if message.author == user:
-                messages.append("Mensagem de " + user.name + f" em #{message.channel.name}: " + message.content)
+    try:
 
-    prompt = "analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:" + user.name
-    prompt += "/n".join(messages)
-    async with httpx.AsyncClient() as client:
-        response = await client.get(user.avatar.url)
-        if response.status_code == 200:
-            print(user.avatar.url)
-        
-            print(response.status_code)
-        avatar = response.content
-    response = model.generate_content(
-    [{'mime_type': 'image/png', 'data': base64.b64encode(avatar).decode("utf-8")}, prompt],
-    generation_config=generation_config
-)
+        messages = []
+        for channel in inter.guild.text_channels:
+            async for message in channel.history(limit=mpc):
+                if message.author == user:
+                    messages.append("Mensagem de " + user.name + f" em #{message.channel.name}: " + message.content)
 
-    await inter.followup.send(response.text)
+        prompt = "analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:" + user.name
+        prompt += "/n".join(messages)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(user.avatar.url)
+            if response.status_code == 200:
+                print(user.avatar.url)
+            
+                print(response.status_code)
+            avatar = response.content
+        response = model.generate_content(
+        [{'mime_type': 'image/png', 'data': base64.b64encode(avatar).decode("utf-8")}, prompt],
+        generation_config=generation_config
+    )
+
+        await inter.followup.send(response.text)
+    except Exception as e:	
+        await inter.followup.send(f"deu bom nao. Erro: ```python\n{e}\n```")
 
 
 bot.run(token)
