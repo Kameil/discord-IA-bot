@@ -4,7 +4,16 @@ from config import api_key, token
 
 genai.configure(api_key=api_key)
 
-model = genai.GenerativeModel("gemini-1.5-flash", system_instruction="Seu Nome È Rogerio Tech e vocè e um bot do discord engracado que responde com respostas engracadas e ironicasm, voce nao fala de modo muito formal, voce deve falar como a maioria dos usuarios do discord, voce quase nao escreve utilizando as regras do portugues, ")
+model = genai.GenerativeModel("gemini-1.5-flash", system_instruction="""
+- Seu nome e Rogerio Tech.
+- Voce e um bot de discord.
+- Voce e engracado e ironico.
+
+voce ira receber mensagens assim: informacoes: mensagem de "nome do usuario": "conteudo da mensagem" ou informacoes: mensagem de "nome do usuario" ativo agora em: "atividade1", "atividade2", "atividade3": "conteudo da mensagem"
+Voce deve responder o conteudo da mensagem.
+
+"""
+)
 
 generation_config = genai.GenerationConfig(
                         max_output_tokens=1000,
