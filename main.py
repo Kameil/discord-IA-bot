@@ -80,12 +80,12 @@ async def on_message(message: discord.Message):
 
 
 @bot.tree.command(name='analizar', description='descobrir se e desenrolado.')
-@app_commands.describe(user="Usuario a ser analisado")
-async def Jokenpo(inter: discord.Interaction, user: discord.User):
+@app_commands.describe(user="Usuario a ser analisado", mpc="Mensagens por canal. Padrao:100")	
+async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
     await inter.response.defer()
     messages = []
     for channel in inter.guild.text_channels:
-        async for message in channel.history(limit=100):
+        async for message in channel.history(limit=mpc):
             if message.author == user:
                 messages.append("Mensagem de " + user.name + f" em #{message.channel.name}: " + message.content)
 
