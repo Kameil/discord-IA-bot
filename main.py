@@ -83,7 +83,14 @@ async def on_message(message: discord.Message):
 @app_commands.describe(user="Usuario a ser analisado")
 async def Jokenpo(inter: discord.Interaction, user: discord.User):
     await inter.response.defer()
+    messages = []
+    for channel in inter.guild.text_channels:
+        async for message in channel.history(limit=100):
+            if message.author == user:
+                messages.append("Mensagem de " + user.name + f" em #{message.channel.name}: " + message.content)
+
     prompt = "analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:" + user.name
+    prompt += "/n".join(messages)
     async with httpx.AsyncClient() as client:
         response = await client.get(user.avatar.url)
         if response.status_code == 200:
