@@ -38,7 +38,6 @@ async def on_ready():
     sync = await bot.tree.sync()
     print(f'{len(sync)} Comandos Foram sincronizados.')
 
-
 import httpx
 import base64
 
@@ -61,7 +60,7 @@ async def on_message(message: discord.Message):
             prompt = "informacoes: mensagem de " + '"' + message.author.name + '"'
             if len(atividades) > 0:
                 prompt += " ativo agora em: discord(aqui), " + ", ".join(atividades)
-                
+            prompt +=  ": " + message.content.replace("<@1041361324506087555>", "Rogerio Tech")
             async with message.channel.typing():
                 images = []
                 count = 1
@@ -130,5 +129,17 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
     except Exception as e:	
         await inter.followup.send(f"deu bom nao. Erro: ```python\n{e}\n```")
 
+
+@bot.tree.command(name='resetar', description='Resetar a conversa com o bot no canal atual.')
+async def pedra(inter:discord.Interaction):
+    global chats
+    try:
+        msgs = len(chats[str(inter.channel.id)].history)
+        chats[str(inter.channel.id)] = model.start_chat()
+        embed = discord.Embed(title="Conversa resetada", description="A conversa com o bot foi resetada com sucesso.", color=discord.Color.green())
+        embed.set_footer(text=f"{msgs} mensagens foram apagadas.")
+        await inter.response.send_message("Conversa resetada com sucesso.")
+    except Exception as e:
+        await inter.response.send_message(f"deu bom nao. Erro: ```python\n{e}\n```")	
 
 bot.run(token)
