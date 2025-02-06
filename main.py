@@ -55,7 +55,6 @@ async def on_message(message: discord.Message):
             atividades = []
             if not isinstance(message.channel, discord.DMChannel):
                 if message.author.activities:
-                    print(message.author.activities)
                     atividades = []
                     for atividade in message.author.activities:
                         atividades.append(atividade.name)
