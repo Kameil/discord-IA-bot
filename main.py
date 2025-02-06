@@ -1,4 +1,5 @@
 import google.generativeai as genai
+from google.generativeai.types import AsyncGenerateContentResponse
 import textwrap
 from config import api_key, token
 
@@ -86,11 +87,12 @@ async def on_message(message: discord.Message):
                 conteudo = ""  
 
                 for chunk in response:
+                    await asyncio.sleep(0.5)
                     if len(conteudo) + len(chunk.text) > 2000:
                         message_enviada = await message.channel.send("z", mention_author=False)
                         conteudo = ""
                     conteudo += chunk.text  
-                    await message_enviada.edit(content=conteudo) 
+                    await message_enviada.edit(content=conteudo)
 
 
     await bot.process_commands(message)
