@@ -61,8 +61,7 @@ async def on_message(message: discord.Message):
             prompt = "informacoes: mensagem de " + '"' + message.author.name + '"'
             if len(atividades) > 0:
                 prompt += " ativo agora em: discord(aqui), " + ", ".join(atividades)
-                print(prompt)
-            prompt +=  ": " + message.content.replace("<@1041361324506087555>", "Rogerio Tech")
+                
             async with message.channel.typing():
                 images = []
                 count = 1
@@ -76,7 +75,7 @@ async def on_message(message: discord.Message):
                                 count += 1
                 if len(images) > 0:
                     prompt = [image for image in images] + [prompt]
-                
+                print(prompt)
                 response = chat.send_message(
                     prompt,
                     stream = True,
