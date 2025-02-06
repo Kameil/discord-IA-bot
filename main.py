@@ -138,7 +138,7 @@ async def pedra(inter:discord.Interaction):
         chats[str(inter.channel.id)] = model.start_chat()
         embed = discord.Embed(title="Conversa resetada", description="A conversa com o bot foi resetada com sucesso.", color=discord.Color.green())
         embed.set_footer(text=f"{msgs} mensagens foram apagadas.")
-        await inter.response.send_message("Conversa resetada com sucesso.")
+        await inter.response.send_message(embed=embed)
     except Exception as e:
         await inter.response.send_message(f"deu bom nao. Erro: ```python\n{e}\n```")	
 
