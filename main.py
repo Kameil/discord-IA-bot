@@ -103,6 +103,8 @@ async def on_message(message: discord.Message):
 @app_commands.describe(user="Usuario a ser analisado", mpc="Mensagens por canal. Padrao:100")	
 async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
     await inter.response.defer()
+    if isinstance(inter.channel, discord.DMChannel):
+        return await inter.followup.send("Esse comando so pode ser executado em um servidor.")
     try:
 
 
