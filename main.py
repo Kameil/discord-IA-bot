@@ -9,6 +9,9 @@ import os
 import httpx
 import base64
 import asyncio
+from tamga import Tamga
+
+logger = Tamga()
 
 genai.configure(api_key=api_key)
 
@@ -35,9 +38,9 @@ chats = {}
 
 @bot.event
 async def on_ready():
-    print(f'Online {bot.user}')
+    logger.success(f'Bot Online Em {bot.user}')
     sync = await bot.tree.sync()
-    print(f'{len(sync)} Comandos Foram sincronizados.')
+    logger.success(f'{len(sync)} Comandos Foram sincronizados.')
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -67,7 +70,7 @@ async def on_message(message: discord.Message):
 
                 if images:
                     prompt = images + [prompt]
-                print(prompt)
+                logger.info(f"respondendo mensagem de {message.author.name} em #{message.channel.name}")
                 response = chat.send_message(
                     prompt,
                     stream=True,
@@ -120,6 +123,7 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
             await inter.followup.send("Nao foi possivel obter a imagem do perfil do usuario.")
     except Exception as e:
         await inter.followup.send(f"deu bom nao. Erro: ```python\n{e}\n```")
+        logger.error(f"Erro ao analisar usuario em: {inter.guild.name}")
 
 @bot.tree.command(name='resetar', description='Resetar a conversa com o bot no canal atual.')
 async def pedra(inter: discord.Interaction):
