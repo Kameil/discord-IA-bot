@@ -43,7 +43,7 @@ async def on_ready():
 async def on_message(message: discord.Message):
     if not message.author.bot:
         channel_id = str(message.channel.id)
-        if f"<@{bot.user.id}>" in message.content or isinstance(message.channel, discord.DMChannel):
+        if f"<@{bot.user.id}>" in message.content or isinstance(message.channel, discord.DMChannel) or bot.user in message.mentions:
             if channel_id not in chats:
                 chats[channel_id] = model.start_chat()
             chat = chats[channel_id]
