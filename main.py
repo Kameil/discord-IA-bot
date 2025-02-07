@@ -70,7 +70,7 @@ async def on_message(message: discord.Message):
 
                 if images:
                     prompt = images + [prompt]
-                logger.info(f"respondendo mensagem de {message.author.name} em #{message.channel.name}")
+                logger.info(f"respondendo mensagem de {message.author.name} em #{message.channel.id}")
                 response = chat.send_message(
                     prompt,
                     stream=True,
