@@ -118,7 +118,9 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
                 [{'mime_type': 'image/png', 'data': base64.b64encode(avatar).decode("utf-8")}, prompt],
                 generation_config=generation_config
             )
-            await inter.followup.send(response.text)
+            textos = textwrap.wrap(response.text, 2000)
+            for text in textos:
+                await inter.followup.send(text)
         else:
             await inter.followup.send("Nao foi possivel obter a imagem do perfil do usuario.")
     except Exception as e:
