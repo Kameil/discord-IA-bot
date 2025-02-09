@@ -137,6 +137,7 @@ async def pedra(inter: discord.Interaction):
             embed = discord.Embed(title="Conversa resetada", description="A conversa com o bot foi resetada com sucesso.", color=discord.Color.green())
             embed.set_footer(text=f"{msgs} mensagens foram apagadas.")
             await inter.response.send_message(embed=embed)
+            logger.success(f"Conversa de id:{inter.channel.id} foi resetada")
         else:
             await inter.response.send_message("Nao ha conversa para resetar.")
     except Exception as e:
