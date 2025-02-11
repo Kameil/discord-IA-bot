@@ -28,7 +28,7 @@ model = genai.GenerativeModel("gemini-1.5-flash", system_instruction=SYSTEM_INST
 
 generation_config = genai.GenerationConfig(
     max_output_tokens=1000,
-    temperature=0.5
+    temperature=1.0
 )
 
 bot = commands.Bot('!!!!!!!!', help_command=None, intents=discord.Intents.all())
@@ -142,5 +142,7 @@ async def pedra(inter: discord.Interaction):
             await inter.response.send_message("Nao ha conversa para resetar.")
     except Exception as e:
         await inter.response.send_message(f"deu bom nao. Erro: ```python\n{e}\n```")
+        logger.error("erro ao resetar uma conversa.")
+
 
 bot.run(token)
