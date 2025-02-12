@@ -104,7 +104,7 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, prompt: str=No
                     messages.append(f"Mensagem de {user.name} em #{message.channel.name}: {message.content}")
         prompt_probot = f"analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:{user.name}\n"
         if prompt is not None:
-            prompt_probot = "analise um usuario prioridade na analise:" + prompt + f"Nome do usuario: {user.name}, Mensagens do usuario:"
+            prompt_probot = "analise um usuario prioridade na analise: " + prompt + f" | Nome do usuario: {user.name}, Mensagens do usuario:"
         print(prompt_probot)
         prompt_probot += "\n".join(messages)
 
