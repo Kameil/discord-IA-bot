@@ -92,7 +92,7 @@ async def on_message(message: discord.Message):
 
 @bot.tree.command(name='analisar', description='descobrir se e desenrolado.')
 @app_commands.describe(user="Usuario a ser analisado", mpc="Mensagens por canal. Padrao:100")    
-async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
+async def Jokenpo(inter: discord.Interaction, user: discord.User, prompt: str=None, mpc: int=100):
     await inter.response.defer()
     if isinstance(inter.channel, discord.DMChannel):
         return await inter.followup.send("Esse comando so pode ser executado em um servidor.")
@@ -102,9 +102,11 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
             async for message in channel.history(limit=mpc):
                 if message.author == user:
                     messages.append(f"Mensagem de {user.name} em #{message.channel.name}: {message.content}")
-
-        prompt = f"analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:{user.name}\n"
-        prompt += "\n".join(messages)
+        prompt_probot = f"analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:{user.name}\n"
+        if prompt is not None:
+            prompt_probot = "analise um usuario prioridade na analise:" + prompt + f"Nome do usuario: {user.name}, Mensagens do usuario:"
+        print(prompt_probot)
+        prompt_probot += "\n".join(messages)
 
         async with httpx.AsyncClient() as client:
             response = await client.get(user.avatar.url)
@@ -115,7 +117,7 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, mpc: int=100):
 
         if avatar:
             response = model.generate_content(
-                [{'mime_type': 'image/png', 'data': base64.b64encode(avatar).decode("utf-8")}, prompt],
+                [{'mime_type': 'image/png', 'data': base64.b64encode(avatar).decode("utf-8")}, prompt_probot],
                 generation_config=generation_config
             )
             textos = textwrap.wrap(response.text, 2000)
