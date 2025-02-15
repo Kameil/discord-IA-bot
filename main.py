@@ -10,6 +10,7 @@ import httpx
 import base64
 import asyncio
 from tamga import Tamga
+import datetime
 
 logger = Tamga()
 
@@ -54,7 +55,7 @@ async def on_message(message: discord.Message):
 
                 atividades = [atividade.name for atividade in message.author.activities] if not isinstance(message.channel, discord.DMChannel) and message.author.activities else []
 
-                prompt = f'informacoes: mensagem de "{message.author.name}"'
+                prompt = f'Informaçoes: Mensagem de "{message.author.name},"'
                 if atividades:
                     prompt += f" ativo agora em: discord(aqui), {', '.join(atividades)}"
                 prompt += f": {message.content.replace(f'<@{bot.user.id}>', 'Rogerio Tech')}"
@@ -104,10 +105,12 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, prompt: str=No
         for channel in inter.guild.text_channels:
             async for message in channel.history(limit=mpc):
                 if message.author == user:
-                    messages.append(f"Mensagem de {user.name} em #{message.channel.name}: {message.content}")
+                    horario_utc = message.created_at 
+                    horario_local = horario_utc.astimezone(datetime.timezone(datetime.timedelta(hours=-3)))
+                    messages.append(f'Mensagem de {user.name} em #{message.channel.name}: "{message.content}" às {horario_local.strftime("%H:%M:%S %d/%m/%Y")}')
         prompt_probot = f"analise esse usuario com base no seu nome e na sua imagem de perfil e diga se ele e desenrolado ou nao. Nome:{user.name}\n"
         if prompt is not None:
-            prompt_probot = "analise um usuario prioridade na analise: " + prompt + f" | Nome do usuario: {user.name}, Mensagens do usuario:"
+            prompt_probot = "analise " + prompt + f" | Nome do usuario: {user.name}, Mensagens do usuario:\n"
         print(prompt_probot)
         prompt_probot += "\n".join(messages)
 
