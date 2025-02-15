@@ -134,7 +134,10 @@ async def pedra(inter: discord.Interaction):
     try:
         channel_id = str(inter.channel.id)
         if channel_id in chats:
-            msgs = len(chats[channel_id].history)
+            try:
+                msgs = len(chats[channel_id].history)
+            except:
+                msgs = "undefined"
             chats[channel_id] = model.start_chat()
             embed = discord.Embed(title="Conversa resetada", description="A conversa com o bot foi resetada com sucesso.", color=discord.Color.green())
             embed.set_footer(text=f"{msgs} mensagens foram apagadas.")
