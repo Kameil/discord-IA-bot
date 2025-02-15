@@ -47,46 +47,49 @@ async def on_message(message: discord.Message):
     if not message.author.bot:
         channel_id = str(message.channel.id)
         if f"<@{bot.user.id}>" in message.content or isinstance(message.channel, discord.DMChannel) or bot.user in message.mentions:
-            if channel_id not in chats:
-                chats[channel_id] = model.start_chat()
-            chat = chats[channel_id]
+            try:
+                if channel_id not in chats:
+                    chats[channel_id] = model.start_chat()
+                chat = chats[channel_id]
 
-            atividades = [atividade.name for atividade in message.author.activities] if not isinstance(message.channel, discord.DMChannel) and message.author.activities else []
+                atividades = [atividade.name for atividade in message.author.activities] if not isinstance(message.channel, discord.DMChannel) and message.author.activities else []
 
-            prompt = f'informacoes: mensagem de "{message.author.name}"'
-            if atividades:
-                prompt += f" ativo agora em: discord(aqui), {', '.join(atividades)}"
-            prompt += f": {message.content.replace(f'<@{bot.user.id}>', 'Rogerio Tech')}"
+                prompt = f'informacoes: mensagem de "{message.author.name}"'
+                if atividades:
+                    prompt += f" ativo agora em: discord(aqui), {', '.join(atividades)}"
+                prompt += f": {message.content.replace(f'<@{bot.user.id}>', 'Rogerio Tech')}"
 
-            async with message.channel.typing():
-                images = []
-                if message.attachments:
-                    async with httpx.AsyncClient() as client:
-                        for attachment in message.attachments:
-                            if attachment.content_type.startswith("image/"):
-                                response = await client.get(attachment.url)
-                                image = base64.b64encode(response.content).decode("utf-8")
-                                images.append({'mime_type': attachment.content_type, 'data': image})
+                async with message.channel.typing():
+                    images = []
+                    if message.attachments:
+                        async with httpx.AsyncClient() as client:
+                            for attachment in message.attachments:
+                                if attachment.content_type.startswith("image/"):
+                                    response = await client.get(attachment.url)
+                                    image = base64.b64encode(response.content).decode("utf-8")
+                                    images.append({'mime_type': attachment.content_type, 'data': image})
 
-                if images:
-                    prompt = images + [prompt]
-                logger.info(f"respondendo mensagem de {message.author.name} em #{message.channel.id}")
-                response = chat.send_message(
-                    prompt,
-                    stream=True,
-                    generation_config=generation_config
-                )
+                    if images:
+                        prompt = images + [prompt]
+                    logger.info(f"respondendo mensagem de {message.author.name} em #{message.channel.id}")
+                    response = chat.send_message(
+                        prompt,
+                        stream=True,
+                        generation_config=generation_config
+                    )
 
-                message_enviada = await message.reply("...", mention_author=False)
-                conteudo = ""  
+                    message_enviada = await message.reply("...", mention_author=False)
+                    conteudo = ""  
 
-                for chunk in response:
-                    await asyncio.sleep(0.5)
-                    if len(conteudo) + len(chunk.text) > 2000:
-                        message_enviada = await message.channel.send("z", mention_author=False)
-                        conteudo = ""
-                    conteudo += chunk.text  
-                    await message_enviada.edit(content=conteudo)
+                    for chunk in response:
+                        await asyncio.sleep(0.2)
+                        if len(conteudo) + len(chunk.text) > 2000:
+                            message_enviada = await message.channel.send("z", mention_author=False)
+                            conteudo = ""
+                        conteudo += chunk.text  
+                        await message_enviada.edit(content=conteudo)
+            except Exception as e:
+                await message.channel.send(f"Deu bom nao." + "```python\n" + str(e) + "\n```")
 
     await bot.process_commands(message)
 
