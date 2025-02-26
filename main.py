@@ -103,6 +103,9 @@ async def Jokenpo(inter: discord.Interaction, user: discord.User, prompt: str=No
     try:
         messages = []
         for channel in inter.guild.text_channels:
+            bot_permissions = channel.permissions_for(inter.guild.me)
+            if not bot_permissions.read_message_history:
+                continue
             async for message in channel.history(limit=mpc):
                 if message.author == user:
                     horario_utc = message.created_at 
